@@ -11,6 +11,8 @@ import { EventModule } from './event/event.module';
 import { TicketController } from './ticket/ticket.controller';
 import { TicketService } from './ticket/ticket.service';
 import { TicketModule } from './ticket/ticket.module';
+import { EventService } from './event/event.service';
+import { EventController } from './event/event.controller';
 
 @Module({
   imports: [
@@ -37,7 +39,12 @@ import { TicketModule } from './ticket/ticket.module';
     EventModule,
     TicketModule,
   ],
-  controllers: [AppController, HealthController, TicketController],
-  providers: [AppService, TicketService],
+  controllers: [
+    AppController,
+    HealthController,
+    TicketController,
+    EventController,
+  ],
+  providers: [AppService, TicketService, EventService],
 })
 export class AppModule {}
