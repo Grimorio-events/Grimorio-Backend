@@ -6,7 +6,7 @@ import { Event } from './event.entity';
 import { TicketModule } from 'src/ticket/ticket.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Event]), forwardRef(() => TicketModule)],
+  imports: [TypeOrmModule.forFeature([Event]), forwardRef(() => TicketModule)], // Aplicamos forwardRef para evitar dependencias circulares (Event y Ticket en este caso)
   controllers: [EventController],
   providers: [EventService],
   exports: [TypeOrmModule.forFeature([Event])],

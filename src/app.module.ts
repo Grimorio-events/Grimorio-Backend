@@ -13,6 +13,7 @@ import { TicketService } from './ticket/ticket.service';
 import { TicketModule } from './ticket/ticket.module';
 import { EventService } from './event/event.service';
 import { EventController } from './event/event.controller';
+import { ClerkModule } from './clerk/clerk.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { EventController } from './event/event.controller';
     AuthModule,
     EventModule,
     TicketModule,
+    ClerkModule,
   ],
   controllers: [
     AppController,
