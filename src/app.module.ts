@@ -14,6 +14,7 @@ import { TicketModule } from './ticket/ticket.module';
 import { EventService } from './event/event.service';
 import { EventController } from './event/event.controller';
 import { ClerkModule } from './clerk/clerk.module';
+import { ClerkAuthGuard } from './clerk/clerk-auth.guard';
 
 @Module({
   imports: [
@@ -47,6 +48,6 @@ import { ClerkModule } from './clerk/clerk.module';
     TicketController,
     EventController,
   ],
-  providers: [AppService, TicketService, EventService],
+  providers: [AppService, TicketService, EventService, ClerkAuthGuard],
 })
 export class AppModule {}

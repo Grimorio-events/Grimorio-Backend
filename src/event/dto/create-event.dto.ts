@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsDate,
   Min,
-  IsUUID,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -14,10 +14,10 @@ export class CreateEventDto {
   @IsString()
   address: string;
 
-  @IsDecimal()
+  @IsNumber()
   latitude: number;
 
-  @IsDecimal()
+  @IsNumber()
   longitude: number;
 
   @IsInt()
@@ -30,8 +30,11 @@ export class CreateEventDto {
   @IsDecimal()
   ticketPrice: number;
 
-  @IsUUID()
+  @IsString()
   ownerId: string;
+
+  @IsString()
+  title: string;
 
   @IsString()
   description: string;

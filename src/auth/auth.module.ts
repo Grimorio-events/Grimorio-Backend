@@ -9,7 +9,7 @@ import { JwtStrategy } from './jwt.strategy';
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_PUBLIC_KEY,
+      secret: process.env.CLERK_PUBLIC_KEY,
     }),
   ],
   providers: [AuthService, JwtStrategy],

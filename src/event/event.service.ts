@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Event } from './event.entity';
@@ -8,6 +8,8 @@ import { UpdateEventDto } from './dto/update-event.dto';
 
 @Injectable()
 export class EventService {
+  private readonly logger = new Logger(EventService.name); // Instancia de Logger
+
   constructor(
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
@@ -18,6 +20,8 @@ export class EventService {
 
   // Crear eventos
   async create(createEventDto: CreateEventDto): Promise<Event> {
+    this.logger.log(`Crete event: ${JSON.stringify(createEventDto)}`);
+
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
@@ -49,9 +53,10 @@ export class EventService {
 
       return savedEvent;
     } catch (error) {
+      this.logger.error(`Error al crear evento: ${error.message}`, error.stack);
       // Revierte la transacción si hay errores
       await queryRunner.rollbackTransaction();
-      throw error; // Asegúrate de propagar el error para manejarlo más arriba o devolver una respuesta adecuada
+      throw new Error('Error creating event'); // Asegúrate de propagar el error para manejarlo más arriba o devolver una respuesta adecuada
     } finally {
       // Libera el queryRunner para devolver la conexión al pool
       await queryRunner.release();

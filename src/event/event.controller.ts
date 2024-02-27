@@ -1,7 +1,7 @@
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { ClerkAuthGuard } from 'src/clerk/clerk-auth.guard';
 import {
   Controller,
   Get,
@@ -17,10 +17,18 @@ import {
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @UseGuards(AuthGuard('jwt')) // Asegura el endpoint con JWT/Auth
+  @UseGuards(ClerkAuthGuard) // Autenticación con Clerk
   @Post()
-  create(@Body() createEventDto: CreateEventDto) {
-    return this.eventService.create(createEventDto);
+  async create(@Body() createEventDto: CreateEventDto) {
+    console.log('Received eventData:', createEventDto);
+    try {
+      const createdEvent = await this.eventService.create(createEventDto);
+      console.log('Created event:', createdEvent); // Registro de depuración
+      return createdEvent;
+    } catch (error) {
+      console.error('Error creating event:', error); // Registro de error
+      throw error; // Propaga el error para que pueda ser manejado por un filtro de excepciones
+    }
   }
 
   @Get()
@@ -33,13 +41,13 @@ export class EventController {
     return this.eventService.findOne(id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(ClerkAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
     return this.eventService.update(id, updateEventDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(ClerkAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.eventService.remove(id);

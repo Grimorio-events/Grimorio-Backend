@@ -35,6 +35,9 @@ export class Event {
   ownerId: string;
 
   @Column('text')
+  title: string;
+
+  @Column('text')
   description: string;
 
   @Column('simple-array')

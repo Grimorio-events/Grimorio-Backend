@@ -39,7 +39,7 @@ export class AppConfigService {
 
   // Configurar JWT si es necesario (En revision)
   get jwtSecret(): string {
-    return this.configService.get<string>('CLERK_SECRET', '');
+    return this.configService.get<string>('CLERK_SECRET_KEY', '');
   }
 
   get allowedOrigins(): string {
