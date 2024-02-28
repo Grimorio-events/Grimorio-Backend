@@ -20,7 +20,8 @@ export class EventService {
 
   // Crear eventos
   async create(createEventDto: CreateEventDto): Promise<Event> {
-    this.logger.log(`Crete event: ${JSON.stringify(createEventDto)}`);
+    this.logger.log(`Crete event success`);
+    // this.logger.log(`Crete event: ${JSON.stringify(createEventDto)}`);
 
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -63,8 +64,15 @@ export class EventService {
     }
   }
 
-  async findAll(): Promise<Event[]> {
-    return this.eventRepository.find();
+  async findAll(limit: number = 10, offset: number = 0): Promise<Event[]> {
+    return this.eventRepository.find({
+      take: limit,
+      skip: offset,
+      // Puedes añadir ordenación aquí si es necesario
+      order: {
+        createdAt: 'DESC', // Ordena los eventos por fecha de creación de manera descendente
+      },
+    });
   }
 
   async findOne(id: string): Promise<Event | null> {

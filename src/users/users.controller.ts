@@ -17,7 +17,7 @@ export class UsersController {
     return this.clerkService.getUserById(userId);
   }
 
-  // ACtualizamos datos del usuario.
+  // ACtualizamos datos del usuario. (pendiente)
   @Put(':id')
   async updateUser(
     @Param('id') id: number,
@@ -26,7 +26,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  // Eliminamos datos del usuario.
+  // Eliminamos datos del usuario. (pendiente)
   @Delete(':id')
   async deleteUser(@Param('id') id: number): Promise<void> {
     return this.usersService.remove(id);

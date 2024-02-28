@@ -6,6 +6,7 @@ import { Event } from './event.entity';
 import { TicketModule } from 'src/ticket/ticket.module';
 import { ClerkModule } from 'src/clerk/clerk.module';
 import { ClerkAuthGuard } from 'src/clerk/clerk-auth.guard';
+import { EventResolver } from './event.resolver';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { ClerkAuthGuard } from 'src/clerk/clerk-auth.guard';
     ClerkModule,
   ],
   controllers: [EventController],
-  providers: [EventService, ClerkAuthGuard],
+  providers: [EventService, ClerkAuthGuard, EventResolver],
   exports: [TypeOrmModule.forFeature([Event])],
 })
 export class EventModule {}

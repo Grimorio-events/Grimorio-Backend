@@ -15,9 +15,19 @@ import { EventService } from './event/event.service';
 import { EventController } from './event/event.controller';
 import { ClerkModule } from './clerk/clerk.module';
 import { ClerkAuthGuard } from './clerk/clerk-auth.guard';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
 
 @Module({
   imports: [
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql'),
+      // Habilitar suscripciones si es necesario
+      subscriptions: { 'graphql-ws': false },
+      sortSchema: true,
+    }),
     ConfigModule.forRoot({
       isGlobal: true, // Hace que las variables de entorno estén disponibles globalmente
       envFilePath: '.env',

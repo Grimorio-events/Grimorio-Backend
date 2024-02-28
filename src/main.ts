@@ -7,6 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors(); // Habilitamos CORS
   app.useGlobalPipes(new ValidationPipe());
+  app.useLogger(['warn', 'error']); // Ajusta para mostrar solo advertencias y errores
   app.use(new LoggerMiddleware().use); // Registro del middleware a nivel de la app
   await app.listen(3000);
 }
