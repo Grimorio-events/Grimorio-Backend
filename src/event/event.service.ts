@@ -68,7 +68,7 @@ export class EventService {
     return this.eventRepository.find({
       take: limit,
       skip: offset,
-      // Puedes añadir ordenación aquí si es necesario
+      // Añadir ordenación aquí si es necesario
       order: {
         createdAt: 'DESC', // Ordena los eventos por fecha de creación de manera descendente
       },
