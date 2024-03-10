@@ -1,4 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Event } from './event.entity';
@@ -62,6 +67,25 @@ export class EventService {
       // Libera el queryRunner para devolver la conexión al pool
       await queryRunner.release();
     }
+  }
+
+  // Actualizar la cantidad de ticket habiles
+  async updateAvailableTickets(
+    eventId: string,
+    quantity: number,
+  ): Promise<void> {
+    const event = await this.eventRepository.findOneBy({ id: eventId });
+
+    if (!event) {
+      throw new BadRequestException(
+        'Attempted to purchase more tickets than are available.',
+      );
+    }
+    if (event.availableTickets < quantity) {
+      throw new NotFoundException(`Event with ID "${eventId}" not found.`);
+    }
+    event.availableTickets -= quantity;
+    await this.eventRepository.save(event);
   }
 
   async findAll(limit: number = 10, offset: number = 0): Promise<Event[]> {

@@ -16,6 +16,6 @@ import { EventResolver } from './event.resolver';
   ],
   controllers: [EventController],
   providers: [EventService, ClerkAuthGuard, EventResolver],
-  exports: [TypeOrmModule.forFeature([Event])],
+  exports: [TypeOrmModule.forFeature([Event]), EventService],
 })
 export class EventModule {}

@@ -21,6 +21,34 @@ export class ClerkService {
     }
   }
 
+  // ACtualizamos usuario con el nuevo roomId
+  async updateUserByIdRoomId(userId: string, roomId: string) {
+    try {
+      // Obtenemos el usuario actual para revisar su unsafeMetadata
+      const user = await this.getUserById(userId);
+
+      const currentRoomIds =
+        user.unsafe_metadata && user.unsafe_metadata.roomId
+          ? user.unsafe_metadata.roomId
+          : [];
+
+      // Agrega el nuevo roomId al array si aún no existe
+      const updatedRoomIds = currentRoomIds.includes(roomId)
+        ? currentRoomIds
+        : [...currentRoomIds, roomId];
+
+      // Actualizamos el usuario con los nuevos roomIds
+      const response = await this.clerkAxiosInstance.patch(`/users/${userId}`, {
+        unsafe_metadata: { roomId: updatedRoomIds },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Failed to update user from Clerk:', error);
+      throw new Error('Failed to update user from Clerk');
+    }
+  }
+
   async verifySession(sessionId: string) {
     try {
       const response = await this.clerkAxiosInstance.get(

@@ -18,6 +18,7 @@ import { ClerkAuthGuard } from './clerk/clerk-auth.guard';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { join } from 'path';
     EventModule,
     TicketModule,
     ClerkModule,
+    ChatModule,
   ],
   controllers: [
     AppController,

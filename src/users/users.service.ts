@@ -10,7 +10,6 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  // Metodo para actualziar usuario.
   findOne(id: number): Promise<User> {
     return this.usersRepository.findOneBy({ id });
   }

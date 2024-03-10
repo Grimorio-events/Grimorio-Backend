@@ -36,7 +36,16 @@ type Event {
   updatedAt: DateTime!
 }
 
+type Message {
+  id: ID!
+  receiverId: String!
+  roomId: String!
+  senderId: String!
+  text: String!
+}
+
 type Query {
+  chatRooms(roomIds: [String!]!): [Message]
   event(id: String!): Event
   events: [Event]!
 }
