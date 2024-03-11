@@ -1,11 +1,18 @@
-import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ClerkAuthGuard } from 'src/clerk/clerk-auth.guard';
 import { SendMessageDto } from './dto/send-message.dto';
 import { FindRoomDto } from './dto/find-room.dto';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { ClerkService } from 'src/clerk/clerk.service';
-import { GetRoomsDto } from './dto/get-rooms.dto';
 
 @Controller('chat')
 export class ChatController {
@@ -70,9 +77,28 @@ export class ChatController {
     return newConversation; // Retorna la nueva conversación creada
   }
 
-  @Post('get-chatRooms')
+  // @Get('unique-chats')
+  // @UseGuards(ClerkAuthGuard)
+  // async getUniqueChats(@Query('roomIds') roomIds: string) {
+  //   // Asumiendo que roomIds es una cadena delimitada por comas, la convertimos en un array
+  //   const roomIdsArray = roomIds.split(',');
+  //   return this.chatService.getLatestMessagesByRooms(roomIdsArray);
+  // }
+
+  // last messages
+  @Get('latest-messages')
   @UseGuards(ClerkAuthGuard)
-  async getMessagesByRoomIds(@Body() getRoomsDto: GetRoomsDto) {
-    return this.chatService.getAllChatsRooms(getRoomsDto.roomIds);
+  async getLatestMessagesByRooms(
+    @Query('roomIds') roomIds: string, // Recibe roomIds como string separado por comas
+  ) {
+    const roomIdArray = roomIds.split(','); // Convierte la cadena en un array
+    return this.chatService.getLatestMessagesByRooms(roomIdArray);
+  }
+
+  @Post('get-chatRoom')
+  @UseGuards(ClerkAuthGuard)
+  async getMessagesByRoomId(@Body() body: { roomId: string }) {
+    // Extrae roomId directamente del cuerpo de la solicitud
+    return this.chatService.getAllChatRoom(body.roomId);
   }
 }

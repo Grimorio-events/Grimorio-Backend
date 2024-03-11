@@ -37,6 +37,7 @@ type Event {
 }
 
 type Message {
+  createdAt: DateTime!
   id: ID!
   receiverId: String!
   roomId: String!
@@ -45,7 +46,8 @@ type Message {
 }
 
 type Query {
-  chatRooms(roomIds: [String!]!): [Message]
+  chatRoom(roomId: String!): [Message]
   event(id: String!): Event
   events: [Event]!
+  latestMessagesByRooms(roomIds: [String!]!): [Message]
 }

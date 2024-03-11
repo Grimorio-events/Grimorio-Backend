@@ -37,13 +37,24 @@ export class ChatService {
       text,
       roomId,
     });
-    return this.messageRepository.save(newMessage);
+    const savedMessage = this.messageRepository.save(newMessage);
+    return savedMessage;
   }
 
-  async emitMessage(userId: string, message: any) {
-    const socketId = this.userSockets.get(userId);
+  async emitMessage(receiverId: string, message: any) {
+    const socketId = this.userSockets.get(receiverId);
     if (socketId && this.server) {
       this.server.to(socketId).emit('message', message);
+
+      // Escuchar la confirmación de recepción del receptor
+      this.server.once('message-received', (confirmation) => {
+        const senderSocketId = this.userSockets.get(message.senderId);
+        if (senderSocketId) {
+          this.server
+            .to(senderSocketId)
+            .emit('message-confirmed', confirmation);
+        }
+      });
     }
   }
 
@@ -91,13 +102,61 @@ export class ChatService {
     return newMessage; // Retorna el nuevo mensaje creado
   }
 
-  // Traemos los registros de los chats
-  async getAllChatsRooms(roomIds: string[]): Promise<Message[]> {
-    const allRooms = await this.messageRepository
+  // Traemos los chat existentes por usuario
+  // async getUniqueChatsByRoom(
+  //   roomId: string,
+  //   // senderId: string,
+  // ): Promise<Message[]> {
+  //   // Primero, obtenemos el ID del mensaje más reciente para cada combinación única de roomId y senderId
+  //   const latestMessage = await this.messageRepository
+  //     .createQueryBuilder('message')
+  //     .select('MAX(message.id)', 'id')
+  //     .where('message.roomId = :roomId', {
+  //       roomId,
+  //     })
+  //     .getRawOne();
+
+  //   // Si no encontramos un mensaje, retornamos un arreglo vacío
+  //   if (!latestMessage) return [];
+
+  //   // Luego, recuperamos el registro completo para ese ID
+  //   return this.messageRepository
+  //     .createQueryBuilder('message')
+  //     .where('message.id = :id', { id: latestMessage.id })
+  //     .getMany();
+  // }
+
+  // Traemos los chats con el ultimo mensaje
+  async getLatestMessagesByRooms(roomIds: string[]): Promise<Message[]> {
+    // Utiliza una función de ventana o una subconsulta para obtener los IDs de los últimos mensajes por cada roomId
+    const latestMessagesIds = await this.messageRepository
       .createQueryBuilder('message')
+      .select('MAX(message.id)', 'id') // O usa MAX(message.createdAt) si prefieres basarte en la fecha
       .where('message.roomId IN (:...roomIds)', { roomIds })
+      .groupBy('message.roomId')
+      .getRawMany();
+
+    if (!latestMessagesIds.length) {
+      return [];
+    }
+
+    // Convierte la lista de IDs de mensajes en un array de IDs
+    const ids = latestMessagesIds.map((m) => m.id);
+
+    // Recupera y devuelve los mensajes completos para los IDs identificados
+    return this.messageRepository
+      .createQueryBuilder('message')
+      .where('message.id IN (:...ids)', { ids })
       .getMany();
-    console.log('🚀 ~ ChatService ~ GetAllRooms:', allRooms);
-    return allRooms;
+  }
+
+  // Traemos el registros del chat
+  async getAllChatRoom(roomId: string): Promise<Message[]> {
+    const messages = await this.messageRepository
+      .createQueryBuilder('message')
+      .where('message.roomId = :roomId', { roomId })
+      .getMany();
+
+    return messages;
   }
 }

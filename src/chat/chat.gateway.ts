@@ -52,6 +52,7 @@ export class ChatGateway implements OnGatewayConnection {
     client: Socket,
     message: SendMessageDto,
   ): Promise<void> {
+    console.log('🚀 ~ ChatGateway ~ message:', message);
     try {
       // Guarda el mensaje en la base de datos
       const savedMessage = await this.chatService.saveMessage(
@@ -63,6 +64,7 @@ export class ChatGateway implements OnGatewayConnection {
 
       // Busca el socketId del destinatario
       const receiverSocketId = this.userSockets.get(message.receiverId);
+      console.log('🚀 ~ ChatGateway ~ receiverSocketId:', receiverSocketId);
 
       // Si el destinatario está conectado (socketId encontrado), emite el mensaje
       if (receiverSocketId) {
@@ -82,6 +84,7 @@ export class ChatGateway implements OnGatewayConnection {
   }
 
   handleDisconnect(client: Socket) {
+    console.log(`🚀 ~ Cliente disconnet: ${client.id}`);
     // Eliminar el socket ID del mapa cuando el cliente se desconecta
     const entry = Array.from(this.userSockets.entries()).find(
       (entry) => entry[1] === client.id,

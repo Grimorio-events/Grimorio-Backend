@@ -6,10 +6,24 @@ import { ChatService } from './chat.service';
 export class ChatResolver {
   constructor(private chatService: ChatService) {}
 
-  @Query(() => [Message], { nullable: 'itemsAndList' }) // Permite tanto listas vacías como elementos nulos dentro de la lista.
-  async chatRooms(
-    @Args('roomIds', { type: () => [String] }) roomIds: string[],
+  // @Query(() => [Message], { nullable: 'itemsAndList' })
+  // async uniqueChats(
+  //   @Args('roomId', { type: () => String }) roomId: string,
+  // ): Promise<Message[]> {
+  //   return this.chatService.getUniqueChatsByRoom(roomId);
+  // }
+
+  @Query(() => [Message], { nullable: 'itemsAndList' })
+  async latestMessagesByRooms(
+    @Args('roomIds', { type: () => [String] }) roomIds: string[], // Define roomIds como un array de strings
   ): Promise<Message[]> {
-    return this.chatService.getAllChatsRooms(roomIds);
+    return this.chatService.getLatestMessagesByRooms(roomIds);
+  }
+
+  @Query(() => [Message], { nullable: 'itemsAndList' })
+  async chatRoom(
+    @Args('roomId', { type: () => String }) roomId: string,
+  ): Promise<Message[]> {
+    return this.chatService.getAllChatRoom(roomId);
   }
 }

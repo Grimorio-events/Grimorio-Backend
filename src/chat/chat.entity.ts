@@ -1,5 +1,10 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -23,4 +28,8 @@ export class Message {
   @Field()
   @Column({ nullable: true })
   roomId?: string;
+
+  @Field(() => Date)
+  @CreateDateColumn()
+  createdAt: Date;
 }
