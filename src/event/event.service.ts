@@ -1,5 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DeepPartial } from 'typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Event } from './event.entity';
 import { Ticket } from 'src/ticket/ticket.entity';
@@ -75,6 +76,35 @@ export class EventService {
     });
   }
 
+  async updateStatus(id: string, status: string): Promise<Event | null> {
+    try {
+      const event = await this.eventRepository.findOne({ where: { id } });
+
+      if (!event) {
+        console.error(`Event with ID ${id} not found`);
+        return null;
+      }
+
+      // Log the current state of the event before update
+      console.log('Current event state:', event);
+
+      // Update the event properties
+      const updateObject = { status } as DeepPartial<Event>;
+      await this.eventRepository.update(id, updateObject);
+
+      // Log the updated state of the event
+      const updatedEvent = await this.eventRepository.findOne({
+        where: { id },
+      });
+      console.log('Updated event state:', updatedEvent);
+
+      return updatedEvent;
+    } catch (error) {
+      console.error('Error updating event status:', error);
+      throw error; // Propagate the error for further investigation
+    }
+  }
+
   async findOne(id: string): Promise<Event | null> {
     return this.eventRepository.findOneBy({ id });
   }
@@ -89,5 +119,34 @@ export class EventService {
 
   async remove(id: string): Promise<void> {
     await this.eventRepository.delete(id);
+  }
+
+  async addCategory(id: string, category: string): Promise<Event> {
+    const event = await this.eventRepository.findOne({ where: { id } });
+
+    if (!event) {
+      throw new NotFoundException(`Event with ID ${id} not found`);
+    }
+
+    if (!event.categories) {
+      event.categories = [];
+    }
+
+    event.categories.push(category);
+    return this.eventRepository.save(event);
+  }
+
+  async removeCategory(id: string, category: string): Promise<Event> {
+    const event = await this.eventRepository.findOne({ where: { id } });
+
+    if (!event) {
+      throw new NotFoundException(`Event with ID ${id} not found`);
+    }
+
+    if (event.categories) {
+      event.categories = event.categories.filter((c) => c !== category);
+    }
+
+    return this.eventRepository.save(event);
   }
 }

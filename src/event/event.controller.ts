@@ -11,6 +11,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 
 @Controller('events')
@@ -44,6 +45,7 @@ export class EventController {
   @UseGuards(ClerkAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
+    console.log('Route hit update request:', id, updateEventDto);
     return this.eventService.update(id, updateEventDto);
   }
 
@@ -51,5 +53,44 @@ export class EventController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.eventService.remove(id);
+  }
+
+  // @UseGuards(ClerkAuthGuard)
+  @Patch(':id/update-status')
+  async updateStatus(
+    @Param('id') id: string,
+    @Body() updateEventDto: UpdateEventDto,
+  ) {
+    console.log('Received update status request:', id, updateEventDto);
+
+    try {
+      const result = await this.eventService.updateStatus(
+        id,
+        updateEventDto.status,
+      );
+      console.log('Update status result:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating status:', error);
+      throw new BadRequestException('Invalid request data');
+    }
+  }
+
+  // @UseGuards(ClerkAuthGuard)
+  @Patch(':id/add-category')
+  async addCategory(
+    @Param('id') id: string,
+    @Body('category') category: string,
+  ) {
+    return this.eventService.addCategory(id, category);
+  }
+
+  // @UseGuards(ClerkAuthGuard)
+  @Patch(':id/remove-category')
+  async removeCategory(
+    @Param('id') id: string,
+    @Body('category') category: string,
+  ) {
+    return this.eventService.removeCategory(id, category);
   }
 }
