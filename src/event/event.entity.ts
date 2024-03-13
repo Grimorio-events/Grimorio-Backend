@@ -16,6 +16,10 @@ export class Event {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Field()
+  @Column({ length: 500 })
+  name: string;
+
   @Field() // Usa este decorador para exponer campos en GraphQL
   @Column({ length: 500 })
   address: string;

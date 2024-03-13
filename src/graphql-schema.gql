@@ -23,6 +23,7 @@ type Event {
   images: [String!]!
   latitude: Float!
   longitude: Float!
+  name: String!
   organizerContact: String
   ownerId: String!
   rating: Int!

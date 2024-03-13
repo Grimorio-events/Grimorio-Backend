@@ -34,12 +34,12 @@ import { join } from 'path';
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get('DB_HOST'),
-        port: +config.get<number>('DB_PORT'),
-        username: config.get('DB_USERNAME'),
-        password: config.get('DB_PASSWORD'),
-        database: config.get('DB_DATABASE'),
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        username: 'Salomon',
+        password: 'Gandiva521',
+        database: 'eventos_db',
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: process.env.NODE_ENV !== 'production', // IMPORTANTE: estar en FALSE cuando salga a produccion.
       }),

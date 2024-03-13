@@ -18,7 +18,7 @@ import {
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @UseGuards(ClerkAuthGuard) // Autenticación con Clerk
+  // @UseGuards(ClerkAuthGuard) // Autenticación con Clerk
   @Post()
   async create(@Body() createEventDto: CreateEventDto) {
     console.log('Received eventData:', createEventDto);
@@ -49,7 +49,7 @@ export class EventController {
     return this.eventService.update(id, updateEventDto);
   }
 
-  @UseGuards(ClerkAuthGuard)
+  // @UseGuards(ClerkAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.eventService.remove(id);

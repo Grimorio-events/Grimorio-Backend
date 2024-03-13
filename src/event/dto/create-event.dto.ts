@@ -1,6 +1,5 @@
 import {
   IsString,
-  IsDecimal,
   IsInt,
   IsArray,
   IsOptional,
@@ -13,6 +12,9 @@ import { Type } from 'class-transformer';
 export class CreateEventDto {
   @IsString()
   address: string;
+
+  @IsString()
+  name: string;
 
   @IsNumber()
   latitude: number;
@@ -27,7 +29,7 @@ export class CreateEventDto {
   @IsString()
   eventType: string;
 
-  @IsDecimal()
+  @IsNumber()
   ticketPrice: number;
 
   @IsString()
